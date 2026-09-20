@@ -26,6 +26,11 @@ def forecast_response():
 
 
 class ServiceTests(unittest.TestCase):
+    def setUp(self):
+        from weather_service import _cache, _cooldowns
+        _cache.clear()
+        _cooldowns.clear()
+
     def test_weather_contract_and_request_units(self):
         with patch('weather_service._get_json', return_value=forecast_response()) as request:
             result = get_weather(32, 34)

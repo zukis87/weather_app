@@ -3,6 +3,12 @@
 import json
 import math
 import ssl
+from collections import OrderedDict
+from copy import deepcopy
+from threading import RLock
+from time import monotonic
+from email.utils import parsedate_to_datetime
+from datetime import timezone
 from datetime import date, datetime
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
@@ -15,12 +21,53 @@ class WeatherError(Exception):
     """An error that can be displayed to the user."""
 
 
+_cache = OrderedDict()
+_cooldowns = {}
+_request_lock = RLock()
+_RATE_LIMIT_MESSAGE = "Open-Meteo is temporarily rate-limiting this server. Please try again later."
+
+
 def _get_json(url, parameters):
+    key = (url, urlencode(sorted(parameters.items())))
+    with _request_lock:
+        now = monotonic()
+        cached = _cache.get(key)
+        if cached and cached[0] > now:
+            _cache.move_to_end(key)
+            return deepcopy(cached[1])
+        if _cooldowns.get(url, 0) > now:
+            raise WeatherError(_RATE_LIMIT_MESSAGE)
+        try:
+            data = _request_json(url, parameters)
+        except WeatherError as error:
+            cause = error.__cause__
+            if isinstance(cause, HTTPError) and cause.code == 429:
+                delay = 60
+                retry = cause.headers.get('Retry-After') if cause.headers else None
+                try:
+                    delay = max(1, int(retry))
+                except (TypeError, ValueError):
+                    try:
+                        delay = max(1, (parsedate_to_datetime(retry) - datetime.now(timezone.utc)).total_seconds())
+                    except (TypeError, ValueError, AttributeError):
+                        pass
+                _cooldowns[url] = monotonic() + delay
+            raise
+        _cache[key] = (monotonic() + 300, deepcopy(data))
+        _cache.move_to_end(key)
+        while len(_cache) > 128:
+            _cache.popitem(last=False)
+        return data
+
+
+def _request_json(url, parameters):
     context = ssl.create_default_context(cafile=certifi.where())
     try:
         with urlopen(f"{url}?{urlencode(parameters)}", context=context, timeout=10) as response:
             data = json.load(response)
     except HTTPError as error:
+        if error.code == 429:
+            raise WeatherError(_RATE_LIMIT_MESSAGE) from error
         raise WeatherError(f"The weather service returned HTTP {error.code}.") from error
     except (URLError, TimeoutError, OSError) as error:
         raise WeatherError("Could not reach the weather service. Check your connection and try again.") from error
