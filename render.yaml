@@ -7,3 +7,5 @@ services:
     envVars:
       - key: PORT
         value: 10000
+      - key: VISUAL_CROSSING_API_KEY
+        sync: false

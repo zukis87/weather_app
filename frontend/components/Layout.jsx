@@ -21,8 +21,10 @@ export const EmptyState = () => (
 
 export const AppFooter = () => (
   <footer>
-    Weather by <a href="https://open-meteo.com/">Open-Meteo</a>
-    {' · Location data by '}
+    Weather by <a href="https://www.visualcrossing.com/">Visual Crossing</a>
+    {' · City search by '}
+    <a href="https://open-meteo.com/">Open-Meteo</a>
+    {' / '}
     <a href="https://www.geonames.org/">GeoNames</a>
   </footer>
 );

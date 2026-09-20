@@ -32,7 +32,7 @@ class ServiceTests(unittest.TestCase):
         _cooldowns.clear()
 
     def test_weather_contract_and_request_units(self):
-        with patch('weather_service._get_json', return_value=forecast_response()) as request:
+        with patch('weather_service.fetch_forecast', return_value=forecast_response()) as request:
             result = get_weather(32, 34)
         self.assertEqual(result['temperature'], 0)
         self.assertEqual(result['wind_speed'], 0)
@@ -43,24 +43,21 @@ class ServiceTests(unittest.TestCase):
         self.assertEqual(result['forecast'][0]['weather_code'], 61)
         self.assertEqual(len(result['hourly']), 2)
         self.assertEqual(result['hourly'][1], {'time': '2026-09-18T00:00', 'temperature': 10, 'precipitation_probability': 100})
-        parameters = request.call_args.args[1]
-        self.assertEqual(parameters['timezone'], 'auto')
-        self.assertEqual(parameters['wind_speed_unit'], 'kmh')
-        self.assertIn('precipitation_probability', parameters['hourly'])
+        self.assertEqual(request.call_args.args[:2], (32, 34))
 
     def test_invalid_weekly_data_is_rejected(self):
         for value in ([0], [101] * 7, ['invalid'] * 7):
             with self.subTest(value=value):
                 data = forecast_response()
                 data['daily']['precipitation_probability_max'] = value
-                with patch('weather_service._get_json', return_value=data):
+                with patch('weather_service.fetch_forecast', return_value=data):
                     with self.assertRaises(WeatherError):
                         get_weather(32, 34)
 
     def test_missing_current_readings_fail(self):
         data = forecast_response()
         del data['current']['temperature_2m']
-        with patch('weather_service._get_json', return_value=data):
+        with patch('weather_service.fetch_forecast', return_value=data):
             with self.assertRaises(WeatherError):
                 get_weather(32, 34)
 

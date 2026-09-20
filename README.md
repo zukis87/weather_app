@@ -111,3 +111,7 @@ cd ..
 In Render, create a Blueprint from this repository and review `render.yaml`. It defines one Docker web service, the free plan, and a `/healthz` endpoint. Render supplies HTTPS and a public URL. Favorites remain local to each browser/origin and will not transfer automatically from localhost to the hosted URL.
 
 Docker must be installed to build the image locally: `docker build -t city-weather .`, then `docker run --rm -p 10000:10000 city-weather`.
+
+### Visual Crossing forecast key
+
+Forecasts now use Visual Crossing; city search still uses Open-Meteo. In Render → Environment, add `VISUAL_CROSSING_API_KEY` using your Visual Crossing account key, then save and redeploy. Do not commit the key or put it in a frontend/VITE variable. Local Python processes also need this environment variable. The server reports a configuration error until it is set. Existing favorites and frontend data formats remain compatible.

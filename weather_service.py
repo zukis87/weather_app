@@ -15,6 +15,7 @@ from urllib.parse import urlencode
 from urllib.request import urlopen
 
 import certifi
+from visual_crossing import fetch_forecast
 
 
 class WeatherError(Exception):
@@ -24,7 +25,7 @@ class WeatherError(Exception):
 _cache = OrderedDict()
 _cooldowns = {}
 _request_lock = RLock()
-_RATE_LIMIT_MESSAGE = "Open-Meteo is temporarily rate-limiting this server. Please try again later."
+_RATE_LIMIT_MESSAGE = "The weather provider is temporarily rate-limiting this server. Please try again later."
 
 
 def _get_json(url, parameters):
@@ -66,6 +67,8 @@ def _request_json(url, parameters):
         with urlopen(f"{url}?{urlencode(parameters)}", context=context, timeout=10) as response:
             data = json.load(response)
     except HTTPError as error:
+        if error.code in (401, 403):
+            raise WeatherError('The weather provider rejected access. Check the server API key and account quota.') from None
         if error.code == 429:
             raise WeatherError(_RATE_LIMIT_MESSAGE) from error
         raise WeatherError(f"The weather service returned HTTP {error.code}.") from error
@@ -165,17 +168,14 @@ def sun_time(daily, key, local_date):
 
 def get_weather(latitude, longitude):
     """Return current conditions and a seven-day forecast in the city's timezone."""
-    data = _get_json("https://api.open-meteo.com/v1/forecast", {
-        "latitude": latitude,
-        "longitude": longitude,
-        "current": "temperature_2m,relative_humidity_2m,weather_code,is_day,apparent_temperature,wind_speed_10m",
-        "daily": "temperature_2m_min,temperature_2m_max,precipitation_probability_max,weather_code,sunrise,sunset",
-        "hourly": "temperature_2m,precipitation_probability",
-        "wind_speed_unit": "kmh",
-        "forecast_days": 7,
-        "temperature_unit": "celsius",
-        "timezone": "auto",
-    })
+    try:
+        data = fetch_forecast(latitude, longitude, _get_json)
+    except ValueError as error:
+        if str(error).startswith('Weather is not configured.'):
+            raise WeatherError(str(error)) from None
+        raise WeatherError('The forecast provider returned invalid data.') from None
+    except (KeyError, TypeError, AttributeError, OverflowError, OSError):
+        raise WeatherError('The forecast provider returned incomplete data.') from None
     try:
         current = data["current"]
         temperature = current["temperature_2m"]

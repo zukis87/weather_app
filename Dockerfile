@@ -10,7 +10,7 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PORT=10000
 COPY requirements*.txt ./
 RUN pip install --no-cache-dir -r requirements-production.txt
-COPY weather_service.py weather_server.py production.py ./
+COPY weather_service.py weather_server.py visual_crossing.py production.py ./
 COPY tests/ ./tests/
 COPY --from=frontend /build/frontend/dist ./frontend/dist
 RUN python -m unittest discover -s tests -v
