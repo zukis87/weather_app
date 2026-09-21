@@ -17,7 +17,7 @@ const LocationPicker = ({ weather, favorites }) => {
       <LocationTabs active={activeTab} onChange={selectTab} />
       <div key={activeTab} className="location-panel" role="tabpanel" id={`location-panel-${activeTab}`} aria-labelledby={`location-tab-${activeTab}`}>
         {activeTab === 'location' && (
-          <section className="panel" aria-busy={Boolean(weather.busy)}>
+          <section className="panel current-location-panel" aria-busy={Boolean(weather.busy)}>
             <h2>My location</h2>
             <p className="muted">{weather.busy === 'location' ? 'Finding your location… This can take up to 30 seconds.' : 'Use your browser’s location to see your local forecast.'}</p>
             <button type="button" className="mt-4" onClick={weather.locate} disabled={Boolean(weather.busy)}>

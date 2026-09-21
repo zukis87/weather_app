@@ -12,7 +12,7 @@ const App = () => {
   const weather = useWeather();
 
   return (
-    <main className="mx-auto max-w-[1200px] px-6 pt-15 pb-[30px] max-[481px]:px-4 max-[481px]:py-7">
+    <main className="app-shell">
       <AppHeader />
       <div className="location-workspace"><LocationPicker weather={weather} favorites={favorites} /></div>
       <p className="mt-4 mb-0 text-[13px] text-[#65756b]" role="status">{weather.status}</p>
