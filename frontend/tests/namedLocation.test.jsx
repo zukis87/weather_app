@@ -14,7 +14,7 @@ it('persists the chosen name and shows it in favorites after reload', async () =
   const view = render(<App />);
   await user.click(screen.getByRole('tab', { name: 'Globe' }));
   await user.click(await screen.findByRole('button', { name: 'Pick point' }));
-  await user.click(screen.getByRole('button', { name: '☆ Save location' }));
+  await user.click(screen.getByRole('button', { name: 'Save location' }));
   await user.type(screen.getByRole('textbox', { name: 'Location name' }), 'Holiday spot');
   await user.click(screen.getByRole('button', { name: 'Save to favorites' }));
   expect(JSON.parse(localStorage.getItem(FAVORITES_KEY))).toEqual([{ name: 'Holiday spot', latitude: 10, longitude: -20 }]);

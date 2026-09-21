@@ -4,6 +4,18 @@ import userEvent from '@testing-library/user-event';
 import { expect, it } from 'vitest';
 import ForecastExplorer from '../components/ForecastExplorer.jsx';
 
+it('shows weekly and hourly forecasts without an outdoor recommendation', () => {
+  render(<ForecastExplorer weather={{
+    time: '2026-09-21 12:00',
+    forecast: [{ date: '2026-09-21', weather_code: 0 }],
+    hourly: [{ time: '2026-09-21T14:00', temperature: 21, precipitation_probability: 0 }],
+  }} />);
+
+  expect(screen.getByRole('region', { name: '7-day forecast' })).toBeVisible();
+  expect(screen.getByRole('region', { name: 'Hourly forecast' })).toBeVisible();
+  expect(screen.queryByRole('heading', { name: 'Best time to go outside' })).not.toBeInTheDocument();
+});
+
 it('switches hourly data by city-local date and supports keyboard selection', async () => {
   const user = userEvent.setup();
   render(<ForecastExplorer weather={{

@@ -7,7 +7,7 @@ import { getWeather, searchCities } from '../api.js';
 import { FAVORITES_KEY } from '../hooks/useFavorites.js';
 
 vi.mock('../api.js', () => ({ getWeather: vi.fn(), searchCities: vi.fn() }));
-vi.mock('../components/GlobePicker.jsx', () => ({ default: ({ onLoad, favorites }) => <><button onClick={() => onLoad({ name: '0.000°, -30.000°', latitude: 0, longitude: -30 })}>Load globe point</button><button onClick={() => favorites.add({ name: '0.000°, -30.000°', latitude: 0, longitude: -30 })}>☆ Save location</button></> }));
+vi.mock('../components/GlobePicker.jsx', () => ({ default: ({ onLoad, favorites }) => <><button onClick={() => onLoad({ name: '0.000°, -30.000°', latitude: 0, longitude: -30 })}>Load globe point</button><button onClick={() => favorites.add({ name: '0.000°, -30.000°', latitude: 0, longitude: -30 })}>Save location</button></> }));
 beforeEach(() => localStorage.clear());
 
 it('keeps accessible tab names with anchored tooltip labels instead of native tooltips', () => {
@@ -32,7 +32,7 @@ it('keeps city search intact after loading and saving a globe point and reloadin
   await user.click(screen.getByRole('tab', { name: 'Globe' }));
   await user.click(screen.getByRole('button', { name: 'Load globe point' }));
   expect(await screen.findByRole('region', { name: 'Current weather' })).toHaveTextContent('0.000°, -30.000°');
-  await user.click(screen.getByRole('button', { name: '☆ Save location' }));
+  await user.click(screen.getByRole('button', { name: 'Save location' }));
   expect(JSON.parse(localStorage.getItem(FAVORITES_KEY))[0].longitude).toBe(-30);
   await user.click(screen.getByRole('tab', { name: 'Favorites' }));
   await user.click(screen.getByRole('button', { name: 'Load weather for 0.000°, -30.000°' }));

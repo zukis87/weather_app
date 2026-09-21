@@ -37,10 +37,10 @@ it('saves the selected pin before weather is loaded and prevents duplicate savin
   const favorites = { add: vi.fn(), contains: vi.fn().mockReturnValue(false) };
   const onLoad = vi.fn();
   const view = render(<GlobePicker busy="" onLoad={onLoad} favorites={favorites} />);
-  expect(screen.queryByRole('button', { name: '☆ Save location' })).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Save location' })).not.toBeInTheDocument();
   await user.click(await screen.findByRole('button', { name: 'Select ocean point' }));
   expect(screen.queryByRole('textbox', { name: 'Location name' })).not.toBeInTheDocument();
-  await user.click(screen.getByRole('button', { name: '☆ Save location' }));
+  await user.click(screen.getByRole('button', { name: 'Save location' }));
   expect(screen.getByRole('textbox', { name: 'Location name' })).toHaveFocus();
   expect(screen.getByRole('button', { name: 'Save to favorites' })).toBeDisabled();
   await user.type(screen.getByRole('textbox', { name: 'Location name' }), '   ');
@@ -52,6 +52,6 @@ it('saves the selected pin before weather is loaded and prevents duplicate savin
   expect(onLoad).not.toHaveBeenCalled();
   favorites.contains.mockReturnValue(true);
   view.rerender(<GlobePicker busy="" onLoad={onLoad} favorites={favorites} />);
-  expect(screen.getByRole('button', { name: '★ Saved' })).toBeDisabled();
-  expect(screen.queryByRole('button', { name: '☆ Save city' })).not.toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Saved' })).toBeDisabled();
+  expect(screen.queryByRole('button', { name: 'Save city' })).not.toBeInTheDocument();
 });

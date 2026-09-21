@@ -20,15 +20,16 @@ const HourlyChart = ({ hours, field, label, unit, fixedScale }) => {
 
   return (
     <figure className={`hourly-chart hourly-chart--${fixedScale ? 'rain' : 'temperature'}`}>
-      <figcaption className="chart-heading">
-        <div><span className="chart-label">{label}</span><span className="chart-subtitle">{fixedScale ? 'Chance of precipitation' : 'Temperature throughout the day'}</span></div>
-        <div className="chart-reading"><strong>{reading(hours[active]?.[field], unit)}</strong><span>{hours[active]?.time.slice(11, 16)} · Local time</span></div>
+      <figcaption className="flex items-start justify-between gap-3 px-1 text-ink max-[481px]:flex-wrap">
+        <div><span className="block text-[15px] max-[481px]:text-sm">{label}</span><span className="chart-subtitle">{fixedScale ? 'Chance of precipitation' : 'Temperature throughout the day'}</span></div>
+        <div className="chart-reading shrink-0 text-right"><strong>{reading(hours[active]?.[field], unit)}</strong><span>{hours[active]?.time.slice(11, 16)} · Local time</span></div>
       </figcaption>
       {values.length ? (
         <>
-          <div className="chart-scroll">
+          <div className="mt-3.5 overflow-x-auto">
             <svg viewBox="0 0 700 230" onPointerMove={selectPosition} onPointerDown={selectPosition} role="img" aria-label={`${label}. Use the hour slider below to explore exact values.`}>
-              <defs><linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="currentColor" stopOpacity="0.24" /><stop offset="100%" stopColor="currentColor" stopOpacity="0.02" /></linearGradient></defs>
+              <defs><linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="currentColor" stopOpacity="0.16" /><stop offset="100%" stopColor="currentColor" stopOpacity="0" /></linearGradient></defs>
+              <rect x={x(active, hours.length) - 12} y="25" width="24" height="168" rx="12" fill="currentColor" opacity="0.06" />
               {[0, 1, 2, 3, 4].map((tick) => (
                 <g key={tick}>
                   <line x1="52" x2="648" y1={pointY(minimum + tick * (maximum - minimum) / 4)} y2={pointY(minimum + tick * (maximum - minimum) / 4)} className="chart-grid" />
@@ -46,14 +47,14 @@ const HourlyChart = ({ hours, field, label, unit, fixedScale }) => {
                             <line x1={x(index - 1, hours.length)} x2={x(index, hours.length)} y1={pointY(hours[index - 1][field])} y2={pointY(hour[field])} stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
                           </>
                         )}
-                        <circle cx={x(index, hours.length)} cy={pointY(hour[field])} r={index === active ? 6 : 2.5} fill={index === active ? 'white' : 'currentColor'} stroke="currentColor" strokeWidth="3" />
+                        <circle cx={x(index, hours.length)} cy={pointY(hour[field])} r={index === active ? 6 : 1.5} fill={index === active ? 'white' : 'currentColor'} stroke="currentColor" strokeWidth={index === active ? 3 : 1} />
                       </>
                     )
                   )}
                   {(index % 4 === 0 || index === hours.length - 1) && <text x={x(index, hours.length)} y="217" textAnchor="middle">{hour.time.slice(11, 16)}</text>}
                 </g>
               ))}
-              <line x1={x(active, hours.length)} x2={x(active, hours.length)} y1="25" y2="193" stroke="currentColor" strokeOpacity="0.35" strokeDasharray="4 5" />
+              <line x1={x(active, hours.length)} x2={x(active, hours.length)} y1="25" y2="193" stroke="currentColor" strokeOpacity="0.5" strokeDasharray="4 5" />
             </svg>
           </div>
           <label className="chart-slider-label">Explore by hour

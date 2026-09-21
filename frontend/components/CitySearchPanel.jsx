@@ -1,3 +1,4 @@
+import Icon from './Icon.jsx';
 import React from 'react';
 import CitySearch from './CitySearch.jsx';
 import CitySelector from './CitySelector.jsx';
@@ -19,12 +20,12 @@ const CitySearchPanel = ({ weather, favorites }) => (
     />
     {weather.selectedCity && (
       <button
-        className="save-location"
+        className="mt-4 inline-flex items-center gap-2"
         type="button"
         disabled={favorites.contains(weather.selectedCity)}
         onClick={() => favorites.add(weather.selectedCity)}
       >
-        {favorites.contains(weather.selectedCity) ? '★ Saved' : '☆ Save city'}
+        <Icon name="star" size={18} /> {favorites.contains(weather.selectedCity) ? 'Saved' : 'Save city'}
       </button>
     )}
   </section>

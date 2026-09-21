@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getWeather, searchCities } from '../api.js';
+import { getCurrentLocation } from '../currentLocation.js';
 
 const errorMessage = (error) => {
   if (error.name === 'TimeoutError') {
@@ -24,7 +25,7 @@ const useWeather = () => {
     setBusy(task);
     setError('');
     setResult(null);
-    setStatus(task === 'search' ? 'Searching for cities…' : 'Loading weather and weekly forecast…');
+    setStatus(task === 'location' ? 'Finding your location…' : task === 'search' ? 'Searching for cities…' : 'Loading weather and weekly forecast…');
     try {
       await operation();
     } catch (error) {
@@ -56,6 +57,18 @@ const useWeather = () => {
     });
   };
 
+  const locate = () => {
+    if (busy) return;
+    run('location', async () => {
+      const city = await getCurrentLocation();
+      setBusy('weather');
+      setStatus('Loading weather and weekly forecast…');
+      const weather = await getWeather(city);
+      setResult({ city, weather });
+      setStatus('Weather updated for your location.');
+    });
+  };
+
   const fetchWeather = () => loadWeather(cities[Number(selected)]);
   const selectCity = (value) => {
     setSelected(value);
@@ -67,7 +80,7 @@ const useWeather = () => {
   return {
     query, cities, selected, result, busy, status, error,
     selectedCity: cities[Number(selected)],
-    setQuery, search, loadWeather, fetchWeather, selectCity,
+    setQuery, search, loadWeather, fetchWeather, selectCity, locate,
   };
 };
 

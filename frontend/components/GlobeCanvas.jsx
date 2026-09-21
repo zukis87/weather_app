@@ -22,7 +22,7 @@ const GlobeCanvas = ({ location, onSelect, disabled }) => {
   };
 
   return (
-    <div ref={container} className="globe-canvas" onPointerDownCapture={(event) => { gesture.current = { x: event.clientX, y: event.clientY, dragged: false }; }} onPointerMoveCapture={track}>
+    <div ref={container} className="touch-none overflow-hidden rounded-2xl" onPointerDownCapture={(event) => { gesture.current = { x: event.clientX, y: event.clientY, dragged: false }; }} onPointerMoveCapture={track}>
       <Globe ref={globe} width={width} height={Math.min(width, 440)}
         globeImageUrl="/earth-blue-marble.jpg" backgroundColor="#101f2d"
         atmosphereColor="#a3cddd" atmosphereAltitude={0.15} onGlobeReady={ready}

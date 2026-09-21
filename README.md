@@ -115,3 +115,7 @@ Docker must be installed to build the image locally: `docker build -t city-weath
 ### Visual Crossing forecast key
 
 Forecasts now use Visual Crossing; city search still uses Open-Meteo. In Render → Environment, add `VISUAL_CROSSING_API_KEY` using your Visual Crossing account key, then save and redeploy. Do not commit the key or put it in a frontend/VITE variable. Local Python processes also need this environment variable. The server reports a configuration error until it is set. Existing favorites and frontend data formats remain compatible.
+
+### Frontend styling
+
+Tailwind CSS 4 is compiled by the `@tailwindcss/vite` plugin. Use utility classes in JSX for layout and spacing; shared controls and weather themes live in the `components` layer in `frontend/styles.css`. The theme and utility layers are imported without Preflight to preserve the existing browser defaults. Keep complete utility names in source so Tailwind can detect them. Run `npm run build` to check CSS compilation and `npm test` for UI behavior.

@@ -3,7 +3,7 @@ import { cityLabel } from '../cityLabel.js';
 
 const CitySelector = ({ cities, selected, busy, onSelect, onGetWeather }) => (
   cities.length > 0 ? (
-    <div className="selection">
+    <div className="mt-6">
       <label htmlFor="city-match">Choose a matching location</label>
       <select
         id="city-match"
@@ -19,7 +19,7 @@ const CitySelector = ({ cities, selected, busy, onSelect, onGetWeather }) => (
       </select>
       <button
         type="button"
-        className="show-weather"
+        className="mt-3.5 w-full"
         onClick={onGetWeather}
         disabled={Boolean(busy)}
       >

@@ -3,7 +3,7 @@ import React from 'react';
 const CitySearch = ({ query, busy, onQueryChange, onSearch }) => (
   <form onSubmit={onSearch}>
     <label htmlFor="city-search">Find a city</label>
-    <div className="search-row">
+    <div className="flex gap-2.5 max-[481px]:flex-col">
       <input
         id="city-search"
         value={query}

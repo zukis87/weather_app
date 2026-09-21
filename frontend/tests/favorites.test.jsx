@@ -17,15 +17,18 @@ it('saves without duplicates, reloads, loads weather directly and removes persis
   getWeather.mockResolvedValue(weather);
   const view = render(<App />);
   await user.click(screen.getByRole('button', { name: 'Search' }));
-  await user.click(await screen.findByRole('button', { name: '☆ Save city' }));
-  expect(screen.getByRole('button', { name: '★ Saved' })).toBeDisabled();
+  await user.click(await screen.findByRole('button', { name: 'Save city' }));
+  expect(screen.getByRole('button', { name: 'Saved' })).toBeDisabled();
   expect(JSON.parse(localStorage.getItem(FAVORITES_KEY))).toEqual([city]);
   view.unmount();
   render(<App />);
   searchCities.mockClear();
+  expect(screen.getByRole('button', { name: 'Load weather for London' })).toHaveAttribute('aria-pressed', 'false');
   await user.click(screen.getByRole('button', { name: 'Load weather for London' }));
   await screen.findByRole('region', { name: 'Current weather' });
   expect(getWeather).toHaveBeenCalledWith(city);
+  expect(screen.getByRole('button', { name: 'Load weather for London' })).toHaveAttribute('aria-pressed', 'true');
+  expect(screen.getByText('Active')).toBeVisible();
   expect(searchCities).not.toHaveBeenCalled();
   await user.click(screen.getByRole('button', { name: 'Remove London from favorites' }));
   expect(screen.queryByRole('button', { name: 'Load weather for London' })).not.toBeInTheDocument();
@@ -52,7 +55,7 @@ it('reports storage failure and keeps favorites usable for this visit', async ()
   searchCities.mockResolvedValue([city]);
   render(<App />);
   await user.click(screen.getByRole('button', { name: 'Search' }));
-  await user.click(await screen.findByRole('button', { name: '☆ Save city' }));
+  await user.click(await screen.findByRole('button', { name: 'Save city' }));
   expect(screen.getByRole('alert')).toHaveTextContent('could not be saved');
   await user.click(screen.getByRole('tab', { name: 'Favorites' }));
   expect(screen.getByRole('button', { name: 'Load weather for London' })).toBeEnabled();
@@ -64,5 +67,5 @@ it('lists cities and coordinates together without a save-city button', () => {
   expect(screen.getByRole('heading', { name: 'Favorite locations' })).toBeVisible();
   expect(screen.getByRole('button', { name: 'Load weather for London' })).toBeVisible();
   expect(screen.getByRole('button', { name: 'Load weather for 0.000°, -30.000°' })).toBeVisible();
-  expect(screen.queryByRole('button', { name: '☆ Save city' })).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Save city' })).not.toBeInTheDocument();
 });

@@ -23,11 +23,11 @@ const GlobePicker = ({ busy, onLoad, favorites }) => {
   const [location, setLocation] = useState(null);
 
   return (
-    <section className="panel globe-picker" aria-label="Explore the globe">
+    <section className="panel mt-5" aria-label="Explore the globe">
       <div>
         <p className="muted">Drag to rotate. Scroll or pinch to zoom. Tap a location, then show its weather. City search is available in the Find a city tab.</p>
         {supported ? <Suspense fallback={<p role="status">Loading globe…</p>}><GlobeCanvas location={location} disabled={Boolean(busy)} onSelect={(coordinates) => setLocation(coordinateLocation(coordinates))} /></Suspense> : <p role="status">The 3D globe is unavailable in this browser. Use the Find a city tab.</p>}
-        <div className="globe-preview">
+        <div className="globe-preview mt-4 flex flex-wrap items-center justify-between gap-3">
           <p aria-live="polite">{location ? `Selected: ${location.name}` : 'Select a location on Earth.'}</p>
           <button type="button" disabled={!location || Boolean(busy)} onClick={() => onLoad(location)}>{busy === 'weather' ? 'Loading…' : 'Show weather here'}</button>
 
