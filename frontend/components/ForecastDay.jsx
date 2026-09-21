@@ -11,7 +11,7 @@ const ForecastDayCard = ({ day, appearance, selected, onSelect }) => (
   <li className={`forecast-day weather--${appearance.theme}`}>
     <h3><button type="button" className="forecast-select" aria-pressed={selected} aria-label={`Show hourly forecast for ${day.date}`} onClick={onSelect}>{formatDate(day.date, { weekday: 'short' })}</button></h3>
     <time dateTime={day.date}>{formatDate(day.date, { month: 'short', day: 'numeric' })}</time>
-    <span className="mt-2 block text-[26px] leading-none" aria-hidden="true">{appearance.icon}</span>
+    <span className="forecast-icon" aria-hidden="true">{appearance.icon}</span>
     <p className="forecast-condition">{appearance.label}</p>
     <dl>
       <div><dt>High</dt><dd>{temperature(day.temperature_max)}</dd></div>

@@ -271,9 +271,11 @@ a { @apply text-inherit; text-underline-offset: 3px; }
     .weather-hero .hero-details { margin: 16px 0; }
     .weather-hero .hero-condition { margin-bottom: 0; }
   }
+  @media (min-width: 800px) and (max-width: 1099px) {
+    .weekly-days { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
   @media (max-width: 799px) {
-    .weekly-days { grid-template-columns: repeat(7, minmax(105px, 1fr)); overflow-x: auto; padding: 4px 4px 12px; scroll-snap-type: x proximity; }
-    .weekly-days > li { scroll-snap-align: start; }
+    .weekly-days { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .hourly-charts { grid-template-columns: minmax(0, 1fr); gap: 0; }
   }
   @media (max-width: 480px) {
@@ -281,4 +283,56 @@ a { @apply text-inherit; text-underline-offset: 3px; }
     .current-location-panel { gap: 10px; }
     .current-location-panel > .muted { flex-basis: 100%; }
   }
+}
+
+@layer components {
+  .app-shell, .location-workspace, .location-panel, .panel, .weather-hero { min-width: 0; }
+  @media (max-width: 599px) {
+    .app-shell { padding: 20px 12px; }
+    .app-shell > header { margin-bottom: 16px; }
+    .app-shell > header h1 { font-size: 26px; }
+    .app-shell > header p { font-size: 13px; }
+    .panel { padding: 16px; border-radius: 16px; }
+    .location-tabs { max-width: none; gap: 4px; }
+    .location-tabs button:first-child .tab-tooltip { left: 0; transform: none; }
+    .location-tabs button:last-child .tab-tooltip { left: auto; right: 0; transform: none; }
+    .current-location-panel button { width: 100%; min-height: 44px; }
+    .weather-layout, .forecast-column { gap: 16px; }
+    .weather-hero { padding: 20px; border-radius: 20px; }
+    .hero-city { font-size: 26px; }
+    .hero-reading { margin-top: 18px; }
+    .hero-reading strong { font-size: 56px; letter-spacing: -2px; }
+    .hero-reading strong span { font-size: 23px; }
+    .hero-weather-icon { font-size: 56px; width: auto; height: auto; }
+    .hero-condition { margin: 10px 0; font-size: 15px; }
+    .hero-details { gap: 8px; margin: 20px 0; }
+    .hero-details dt { font-size: 11px; line-height: 1.5; }
+    .hero-details dd { font-size: 14px; }
+    .daylight { padding: 14px; margin-top: 18px; }
+    .daylight-summary { gap: 8px; padding-top: 12px; margin-top: 12px; }
+    .daylight-summary div + div { padding-left: 10px; }
+    .daylight-summary dt { font-size: 11px; }
+    .daylight-summary dd { font-size: 19px; }
+    .weekly-days { grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: visible; padding: 0; }
+    .forecast-day { padding: 12px; }
+    .forecast-day dl { display: flex; justify-content: space-between; gap: 6px; }
+    .forecast-day dl div { display: block; margin: 0; }
+    .forecast-day dd { margin-top: 4px; }
+    .forecast-condition { margin: 6px 0 10px; }
+    .hourly-chart { padding: 14px 8px 8px; }
+    .hourly-chart figcaption { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; padding: 0; }
+    .chart-reading strong { font-size: 21px; }
+    .chart-subtitle { display: none; }
+    .hourly-chart text { font-size: 22px; }
+    .chart-hour-secondary { display: none; }
+    .chart-slider-label input { min-height: 44px; }
+    .favorite-cards { grid-template-columns: minmax(0, 1fr); }
+    footer { line-height: 1.8; padding: 0 8px; }
+  }
+}
+
+@layer components {
+  .forecast-icon { position: absolute; top: 12px; right: 10px; font-size: 24px; line-height: 1; pointer-events: none; }
+  .forecast-day h3 { padding-right: 28px; }
+  .forecast-day time { display: block; padding-right: 26px; }
 }

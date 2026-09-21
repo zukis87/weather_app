@@ -51,7 +51,7 @@ const HourlyChart = ({ hours, field, label, unit, fixedScale }) => {
                       </>
                     )
                   )}
-                  {(index % 4 === 0 || index === hours.length - 1) && <text x={x(index, hours.length)} y="217" textAnchor="middle">{hour.time.slice(11, 16)}</text>}
+                  {(index % 4 === 0 || index === hours.length - 1) && <text className={index % 8 === 0 || index === hours.length - 1 ? 'chart-hour' : 'chart-hour chart-hour-secondary'} x={x(index, hours.length)} y="217" textAnchor="middle">{hour.time.slice(11, 16)}</text>}
                 </g>
               ))}
               <line x1={x(active, hours.length)} x2={x(active, hours.length)} y1="25" y2="193" stroke="currentColor" strokeOpacity="0.5" strokeDasharray="4 5" />
